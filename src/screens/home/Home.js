@@ -19,6 +19,8 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 import CardActions from '@material-ui/core/CardActions';
+import Login from "../login/Login";
+import ReactDOM from 'react-dom';
 
 const styles = theme => ({
     root: {
@@ -70,10 +72,20 @@ class Home extends Component {
             searchText: ""
         }
         this.updateSearch = this.updateSearch;
+        this.loggedOut = this.loggedOut;
         console.log(this.state);
     }
 
     updateSearch = (searchText) => { console.log("SearchText::: "+searchText);this.setState({ searchText })}
+    loggedOut = (loggedIn) => {
+        console.log(loggedIn);
+        this.setState({loggedIn});
+        this.gotoLogin();
+    }
+
+    gotoLogin() {
+        ReactDOM.render(<Login/>,document.getElementById('root'));
+    }
 
     componentWillMount() {
         let images = [];
@@ -223,7 +235,7 @@ updateLiked = i => {
 
         return(
             <div>
-                <Header data={this.props.data} updateSearchCB={this.updateSearch}/>
+                <Header data={this.props.data} updateSearchCB={this.updateSearch} updateLoggedOut={this.loggedOut}/>
                 <div className="postGrid">
                     <GridList cols={2}>
                         {this.state.searchText==="" && this.state.imageData.map((img,index) => (

@@ -8,6 +8,7 @@ import pexels from '../../assets/profilePicture.svg';
 import {withStyles} from "@material-ui/core/styles";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import { MenuList, Divider } from '@material-ui/core';
 
 const styles = theme => ({
     avatar: {
@@ -53,6 +54,7 @@ class Header extends Component {
     handleLogout =  () => {
         sessionStorage.removeItem("access_token");
         this.setState({ loggedIn: false });
+        this.props.updateLoggedOut(this.state.loggedIn);
     }
 
     render() {
@@ -72,8 +74,16 @@ class Header extends Component {
                                         <Input className="search-bar-input" type="text" placeholder="Search..." disableUnderline={true} onChange={this.searchHandler} aria-controls="simple-menu" aria-haspopup="true"/>
                                         {this.state.menuOpen===true ? (
                                             <div className="menuDiv">
-                                            <MenuItem onClick={this.handleClose}>My account</MenuItem>
-                                            <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
+                                                <Menu
+                                                    className="menubar"
+                                                    anchorEl={this.state.anchorEl}
+                                                    open={this.state.menuOpen}
+                                                    onClose={this.handleClose}>
+                                                    <MenuList className={classes.menuList}>
+                                                        <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                                                        <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
+                                                    </MenuList>
+                                                </Menu>
                                             </div>) : null
                                         }
                                     </FormControl>
