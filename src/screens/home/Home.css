@@ -1,0 +1,17 @@
+.instaImageDiv {
+    height: auto;
+    overflow: hidden;
+    width: auto;
+    margin-bottom: 20px;
+}
+
+.instaImage {
+    margin: 0px 20px 0px 60px;
+    height: 300px;
+    width: 400px;
+
+}
+
+hr{
+    margin: 20px;
+}

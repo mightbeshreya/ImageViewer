@@ -34,7 +34,8 @@ class Login extends Component {
             loginPasswordRequired: "dispNone",
             loginPassword: "",
             loggedIn: false,
-            loginUnsuccessful: false
+            loginUnsuccessful: false,
+            inHomePage: false
         }
     }
 
@@ -56,14 +57,19 @@ class Login extends Component {
         let password = "superUser";
         console.log("Username: "+this.state.username);
         console.log("Password: "+this.state.loginPassword);
-        let accessToken = "IGQVJWWlppSXVsZA1JLTldMQy1QaGdDNkFJTUJvX2VaSkZAnNmxwd0pDekNNcEpUX1ZAUWlFjV1hQMG9aT2dSTHNlX0N1dXFEMzQ4UnJvVXpMOHd6QjdaTEFmOFJWd0s0TWRIdXZATLTN3TGdySExkYUFBeGpscnNRam9DWlNr";
+        let accessToken = "IGQVJVS3ZAhRGxZASDQtWm1vQkZAobUE3ZAURYSmtCcklDaktVOWlmalloVjFmY2REc0tRay1yc2ZACM0s4UXdJb2VYOEtITlk5SWFCR3lpWnI0NUJuY3hyZAjJrSmhBaGtfZAlFINEQ3VnVHVUk4bmdnN1Y0Rks1TUFpUUtOcjdR";
         if(this.state.username === username && this.state.loginPassword === password) {
+
             sessionStorage.setItem("access-token", accessToken);
             this.setState({
                 loggedIn: true,
-                loginUnsuccessful: false
+                loginUnsuccessful: false,
+                inHomePage: true
+            }, ()=> {
+                ReactDOM.render(<Home data={this.state}/>, document.getElementById('root'));
             });
-            ReactDOM.render(<Home />, document.getElementById('root'));
+            //let that = this;
+            //ReactDOM.render(<Home />, document.getElementById('root'));
         }else {
             this.setState({
                 loginUnsuccessful: true,
@@ -75,7 +81,7 @@ class Login extends Component {
         const { classes } = this.props;
         return(
             <div>
-                <Header/>
+                <Header data={this.state}/>
                 <Card className={classes.root}>
                     <Typography className="loginHeading">LOGIN</Typography>
                     <CardContent>

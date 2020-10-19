@@ -8,5 +8,22 @@
     color: #fff;
     font-size: 18px;
     vertical-align: middle;
+    float:left
+}
+
+.search-box{
+    float: right;
+    border-radius: 4px;
+    width: 300px;
+    background-color: #c0c0c0;
+    vertical-align: middle;
+}
+
+.searchIcon {
+    padding: 5px 0px 0px 10px;
+}
+
+.instaImage{
+    height:400px;
 }
 
