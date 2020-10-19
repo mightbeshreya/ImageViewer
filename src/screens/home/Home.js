@@ -11,7 +11,11 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Avatar from '@material-ui/core/Avatar';
-import moment from 'moment'
+import moment from 'moment';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import Favorite from '@material-ui/icons/Favorite';
+import Input from "@material-ui/core/Input";
+import FormControl from "@material-ui/core/FormControl";
 
 const styles = theme => ({
     root: {
@@ -25,8 +29,9 @@ const styles = theme => ({
     card: {
         maxWidth: 550,
         margin: 20,
-        minHeight: '500px',
+        minHeight: '700px',
         marginLeft: '4%',
+
     },
     avatar: {
         margin: 15,
@@ -48,6 +53,9 @@ class Home extends Component {
             loggedIn: sessionStorage.getItem("access-token") === "null" ? false : true,
             userImagesId: [],
             imageData: [],
+            caption: "",
+            liked: [],
+            likes: []
         }
         console.log(this.state);
     }
@@ -68,9 +76,14 @@ class Home extends Component {
                     xhr2.addEventListener("readystatechange", function () {
                         if (this.readyState === 4) {
                             console.log(JSON.parse(this.responseText));
-                            var joined = thatthat.state.imageData.concat(JSON.parse(this.responseText));
+                            var x = JSON.parse(this.responseText)
+                            var joined = thatthat.state.imageData.concat(x);
                             thatthat.setState({imageData:joined});
-                            console.log(thatthat.state);
+
+                            var y = thatthat.state.liked.concat('false')
+                            thatthat.setState({liked:y})
+                            var z = thatthat.state.likes.concat('2')
+                            thatthat.setState({likes:z});
                         }
                     });
                     xhr2.open('GET', "https://graph.instagram.com/"+images[i].id+"?fields=id,media_type,media_url,username,timestamp&access_token="+that.state.accesstoken);
@@ -82,15 +95,81 @@ class Home extends Component {
         xhr.send();
     }
 
+getCaption(id)
+{
+    for (var i = 0; i < this.state.userImagesId.length; i++) {
+        if (this.state.userImagesId[i].id === id) {
+            return this.state.userImagesId[i].caption;
+        }
+    }
+}
+
+getOnlyCaption(id) {
+    for (var i = 0; i < this.state.userImagesId.length; i++) {
+        if (this.state.userImagesId[i].id === id) {
+            var onlyCaption =  this.state.userImagesId[i].caption;
+            return onlyCaption.replace(/(^|\s)(#[a-z\d-]+)/ig, "");
+        }
+    }
+}
+
+findHashtags(searchText) {
+    var x = this.getCaption(searchText)
+    var regexp = /\B\#\w\w+\b/g
+    var result = x.match(regexp);
+    if (result) {
+        console.log("Hashtags: "+result);
+        return result.toString();
+    } else {
+        return "";
+    }
+}
+
+updateLiked = i => {
+    this.setState(state => {
+        const liked = state.liked.map((item, j) => {
+            if (j === i) {
+                return !item;
+            } else {
+                return item;
+            }
+        });
+
+        return {
+            liked,
+        };
+    });
+};
+
+    updateLikes = (i, str) => {
+        this.setState(state => {
+            const likes = state.likes.map((item, j) => {
+                if (j === i) {
+                    if(str === "plus") {
+                        return parseInt(item) + 1;
+                    }else {
+                        return parseInt(item) - 1;
+                    }
+                } else {
+                    return item;
+                }
+            });
+
+            return {
+                likes,
+            };
+        });
+    };
+
     render() {
         const { classes } = this.props;
+
         return(
             <div>
                 <Header data={this.props.data}/>
                 <div className="postGrid">
                     <GridList cols={2}>
-                        {this.state.imageData.map(img => (
-
+                        {this.state.imageData.map((img,index) => (
                             <Card className={classes.card} key={"card"+img.id}>
                                 <CardHeader avatar={<Avatar alt="ProfilePicture" src={pexels} className={classes.avatar}/>}
                                             title={img.username}
@@ -103,7 +182,31 @@ class Home extends Component {
                                         </div>
                                         <hr/>
                                         <div className="caption">
-
+                                            {this.getOnlyCaption(img.id)}
+                                        </div>
+                                        <div className="hashtags">
+                                            {this.findHashtags(img.id).replace(",", " ")}
+                                        </div>
+                                        <div>
+                                            <div onClick={(event)=> {
+                                                if(this.state.liked[index]){
+                                                    this.updateLiked(index);
+                                                    this.updateLikes(index, "plus")
+                                                }else {
+                                                    this.updateLiked(index);
+                                                    this.updateLikes(index, "minus");
+                                                }
+                                            } }>
+                                            {this.state.liked[index] ?
+                                                <FavoriteBorder className="favBorIcon" />: <Favorite className="favIcon" />
+                                            }
+                                            {this.state.likes[index]} Likes
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <FormControl>
+                                                <Input className="comment-input" type="text" placeholder="Add a comment"/>
+                                            </FormControl>
                                         </div>
                                     </GridListTile>
                                 </CardContent>

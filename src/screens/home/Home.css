@@ -15,3 +15,21 @@
 hr{
     margin: 20px;
 }
+
+.caption{
+    margin: 0px 20px 0px 60px;
+}
+
+.hashtags{
+    color: blue;
+    margin: 0px 20px 0px 60px;
+}
+
+.favBorIcon{
+    margin: 0px 0px 0px 60px;
+}
+
+.favIcon {
+    margin: 0px 0px 0px 60px;
+    color : red;
+}
