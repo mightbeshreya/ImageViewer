@@ -16,6 +16,9 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Favorite from '@material-ui/icons/Favorite';
 import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Button from "@material-ui/core/Button";
+import CardActions from '@material-ui/core/CardActions';
 
 const styles = theme => ({
     root: {
@@ -41,7 +44,13 @@ const styles = theme => ({
     icon: {
         margin: theme.spacing(1),
         fontSize: 32,
-    }
+    },
+    formControl: {
+        margin: "0px 0px 0px 60px",
+        minWidth: 240,
+        maxWidth: 240,
+
+    },
 });
 
 class Home extends Component {
@@ -55,7 +64,11 @@ class Home extends Component {
             imageData: [],
             caption: "",
             liked: [],
-            likes: []
+            likes: [],
+            commentInPost: [],
+            commentsInPost: [],
+            "commentByUser": "",
+            "commentByUserAdded": "",
         }
         console.log(this.state);
     }
@@ -79,11 +92,15 @@ class Home extends Component {
                             var x = JSON.parse(this.responseText)
                             var joined = thatthat.state.imageData.concat(x);
                             thatthat.setState({imageData:joined});
-
                             var y = thatthat.state.liked.concat('false')
                             thatthat.setState({liked:y})
                             var z = thatthat.state.likes.concat('2')
                             thatthat.setState({likes:z});
+                            /*var comm = thatthat.state.commentsInPost.concat("c");
+                            thatthat.setState({commentsInPost:comm});
+                            var com = thatthat.state.commentInPost.concat("c");
+                            thatthat.setState({commentInPost:com});
+                            console.log(JSON.parse(thatthat.state.commentInPost)); */
                         }
                     });
                     xhr2.open('GET', "https://graph.instagram.com/"+images[i].id+"?fields=id,media_type,media_url,username,timestamp&access_token="+that.state.accesstoken);
@@ -161,6 +178,14 @@ updateLiked = i => {
         });
     };
 
+    inputCommentHandler= (e,i) => {
+        this.setState({commentByUser: e.target.value});
+    }
+
+    addCommentHandler=() => {
+        this.setState({commentByUserAdded: this.state.commentByUser});
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -202,14 +227,22 @@ updateLiked = i => {
                                             }
                                             {this.state.likes[index]} Likes
                                             </div>
-                                        </div>
-                                        <div>
-                                            <FormControl>
-                                                <Input className="comment-input" type="text" placeholder="Add a comment"/>
+                                        </div><br/>
+                                        {this.state.commentByUserAdded !=="" &&
+                                        <span className="actualComment">{img.username}: {this.state.commentByUserAdded}</span>
+                                        }
+                                        <div className="addCommentDiv">
+                                            <FormControl className={classes.formControl}>
+                                                <InputLabel htmlFor="comment-text">Add a comment</InputLabel>
+                                                <Input id="comment-text" type="text" commentByUser={this.state.commentByUser} onChange={(event)=>{this.inputCommentHandler(event,index)}} />
                                             </FormControl>
+                                            <Button variant="contained" color="primary" onClick={this.addCommentHandler} className="addCommentButton">ADD</Button>
                                         </div>
                                     </GridListTile>
                                 </CardContent>
+                                <CardActions>
+
+                                </CardActions>
                             </Card>
                         ))}
                     </GridList>
