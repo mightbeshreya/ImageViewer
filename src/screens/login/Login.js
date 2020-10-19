@@ -57,7 +57,7 @@ class Login extends Component {
         let password = "superUser";
         console.log("Username: "+this.state.username);
         console.log("Password: "+this.state.loginPassword);
-        let accessToken = "IGQVJVX0diUVl1ZAzJ0SW9QZAWRSVHlUU2xFSEtleVFCeTFUTUtrTkMzeU04MEZATeTBBeFdGcHR6ZAW5zQVlkY3ZAuSnRmSkh3ajg4SUc1eUJtSlJRc19FWi04SS1kS0wteGFOcmRfWFEybXNaWXg1SWFIbGF2MUhPRUdlT2JZA";
+        let accessToken = "IGQVJYT3NISEdfanprelltajlmRzdLcjU0RVVyVkxsUVJyajhfQ0pPa056UmdoLXp2ckxkaUR0d0xVdXVEaEhIVHpZAVVZAUbFNKdHQzXzQ5ekVEa0p1enVZAWThUa3lfajVZAb3VUWEtnQ1l4eE56ZAWtrcUszQVJIdHFRQUNR";
         if(this.state.username === username && this.state.loginPassword === password) {
 
             sessionStorage.setItem("access-token", accessToken);

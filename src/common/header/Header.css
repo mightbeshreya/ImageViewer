@@ -12,11 +12,11 @@
 }
 
 .search-box{
-    float: right;
     border-radius: 4px;
     width: 300px;
     background-color: #c0c0c0;
     vertical-align: middle;
+    height: 30px;
 }
 
 .searchIcon {
@@ -25,5 +25,13 @@
 
 .instaImage{
     height:400px;
+}
+
+.right{
+    display: flex;
+    flex-direction: row;
+    float: right;
+    vertical-align: middle;
+    justify-content: space-around!important;
 }
 

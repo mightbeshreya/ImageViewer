@@ -65,10 +65,8 @@ class Home extends Component {
             caption: "",
             liked: [],
             likes: [],
-            commentInPost: [],
             commentsInPost: [],
-            "commentByUser": "",
-            "commentByUserAdded": "",
+            "commentByUser": ""
         }
         console.log(this.state);
     }
@@ -96,16 +94,14 @@ class Home extends Component {
                             thatthat.setState({liked:y})
                             var z = thatthat.state.likes.concat('2')
                             thatthat.setState({likes:z});
-                            /*var comm = thatthat.state.commentsInPost.concat("c");
+                            var comm = thatthat.state.commentsInPost.concat('c');
                             thatthat.setState({commentsInPost:comm});
-                            var com = thatthat.state.commentInPost.concat("c");
-                            thatthat.setState({commentInPost:com});
-                            console.log(JSON.parse(thatthat.state.commentInPost)); */
                         }
                     });
                     xhr2.open('GET', "https://graph.instagram.com/"+images[i].id+"?fields=id,media_type,media_url,username,timestamp&access_token="+that.state.accesstoken);
                     xhr2.send();
                 }
+
             }
         });
         xhr.open("GET", "https://graph.instagram.com/me/media?fields=id,caption&access_token="+this.state.accesstoken);
@@ -178,12 +174,28 @@ updateLiked = i => {
         });
     };
 
-    inputCommentHandler= (e,i) => {
+    inputCommentHandler= (e) => {
         this.setState({commentByUser: e.target.value});
     }
 
-    addCommentHandler=() => {
-        this.setState({commentByUserAdded: this.state.commentByUser});
+    addCommentHandler= (e, index) => {
+        this.setState(state => {
+            const commentsInPost = state.commentsInPost.map((item, j) => {
+                if (j === index) {
+                    var actualComment = this.state.commentByUser;
+                    this.setState({
+                        commentByUser:""
+                    })
+                    return actualComment;
+                } else {
+                    return item;
+                }
+            });
+
+            return {
+                commentsInPost,
+            };
+        });
     }
 
     render() {
@@ -228,15 +240,18 @@ updateLiked = i => {
                                             {this.state.likes[index]} Likes
                                             </div>
                                         </div><br/>
-                                        {this.state.commentByUserAdded !=="" &&
-                                        <span className="actualComment">{img.username}: {this.state.commentByUserAdded}</span>
+                                        {this.state.commentsInPost[index] !== "c" &&
+                                        <span
+                                            className="actualComment"><span className="makeBold"> {img.username}</span>: {this.state.commentsInPost[index]}
+                                        </span>
                                         }
+
                                         <div className="addCommentDiv">
                                             <FormControl className={classes.formControl}>
                                                 <InputLabel htmlFor="comment-text">Add a comment</InputLabel>
-                                                <Input id="comment-text" type="text" commentByUser={this.state.commentByUser} onChange={(event)=>{this.inputCommentHandler(event,index)}} />
+                                                <Input id="comment-text" type="text" commentByUser={this.state.commentByUser} onChange={this.inputCommentHandler} />
                                             </FormControl>
-                                            <Button variant="contained" color="primary" onClick={this.addCommentHandler} className="addCommentButton">ADD</Button>
+                                            <Button variant="contained" color="primary" onClick={(event)=>this.addCommentHandler(event,index)} className="addCommentButton">ADD</Button>
                                         </div>
                                     </GridListTile>
                                 </CardContent>
