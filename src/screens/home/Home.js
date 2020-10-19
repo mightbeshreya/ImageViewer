@@ -66,10 +66,14 @@ class Home extends Component {
             liked: [],
             likes: [],
             commentsInPost: [],
-            "commentByUser": ""
+            commentByUser: "",
+            searchText: ""
         }
+        this.updateSearch = this.updateSearch;
         console.log(this.state);
     }
+
+    updateSearch = (searchText) => { console.log("SearchText::: "+searchText);this.setState({ searchText })}
 
     componentWillMount() {
         let images = [];
@@ -198,15 +202,31 @@ updateLiked = i => {
         });
     }
 
+    getImageFilter(id) {
+        for (var i = 0; i < this.state.imageData.length; i++) {
+            if (this.state.imageData[i].id === id) {
+                return this.state.imageData[i].media_url;
+            }
+        }
+    }
+
     render() {
         const { classes } = this.props;
 
+        const { searchText, userImagesId } = this.state;
+        const lowercasedFilter = searchText.toLowerCase();
+        const filteredData = userImagesId.filter(item => {
+            return Object.keys(item).some(key =>
+                item[key].toLowerCase().includes(lowercasedFilter)
+            );
+        });
+
         return(
             <div>
-                <Header data={this.props.data}/>
+                <Header data={this.props.data} updateSearchCB={this.updateSearch}/>
                 <div className="postGrid">
                     <GridList cols={2}>
-                        {this.state.imageData.map((img,index) => (
+                        {this.state.searchText==="" && this.state.imageData.map((img,index) => (
                             <Card className={classes.card} key={"card"+img.id}>
                                 <CardHeader avatar={<Avatar alt="ProfilePicture" src={pexels} className={classes.avatar}/>}
                                             title={img.username}
@@ -238,6 +258,60 @@ updateLiked = i => {
                                                 <FavoriteBorder className="favBorIcon" />: <Favorite className="favIcon" />
                                             }
                                             {this.state.likes[index]} Likes
+                                            </div>
+                                        </div><br/>
+                                        {this.state.commentsInPost[index] !== "c" &&
+                                        <span
+                                            className="actualComment"><span className="makeBold"> {img.username}</span>: {this.state.commentsInPost[index]}
+                                        </span>
+                                        }
+
+                                        <div className="addCommentDiv">
+                                            <FormControl className={classes.formControl}>
+                                                <InputLabel htmlFor="comment-text">Add a comment</InputLabel>
+                                                <Input id="comment-text" type="text" commentByUser={this.state.commentByUser} onChange={this.inputCommentHandler} />
+                                            </FormControl>
+                                            <Button variant="contained" color="primary" onClick={(event)=>this.addCommentHandler(event,index)} className="addCommentButton">ADD</Button>
+                                        </div>
+                                    </GridListTile>
+                                </CardContent>
+                                <CardActions>
+
+                                </CardActions>
+                            </Card>
+                        ))}
+                        {this.state.searchText!=="" && filteredData.map((img,index) => (
+                            <Card className={classes.card} key={"card_search"+img.id}>
+                                <CardHeader avatar={<Avatar alt="ProfilePicture" src={pexels} className={classes.avatar}/>}
+                                            title={img.username}
+                                            subheader={moment(new Date(img.timestamp)).format("DD/MM/YYYY HH:mm:ss")}
+                                />
+                                <CardContent>
+                                    <GridListTile key={"image"+ img.id} className="user-image-grid-item">
+                                        <div className="instaImageDiv">
+                                            <img src={this.getImageFilter(img.id)} className="instaImage" alt="IMAGE"/>
+                                        </div>
+                                        <hr/>
+                                        <div className="caption">
+                                            {this.getOnlyCaption(img.id)}
+                                        </div>
+                                        <div className="hashtags">
+                                            {this.findHashtags(img.id).replace(",", " ")}
+                                        </div>
+                                        <div>
+                                            <div onClick={(event)=> {
+                                                if(this.state.liked[index]){
+                                                    this.updateLiked(index);
+                                                    this.updateLikes(index, "plus")
+                                                }else {
+                                                    this.updateLiked(index);
+                                                    this.updateLikes(index, "minus");
+                                                }
+                                            } }>
+                                                {this.state.liked[index] ?
+                                                    <FavoriteBorder className="favBorIcon" />: <Favorite className="favIcon" />
+                                                }
+                                                {this.state.likes[index]} Likes
                                             </div>
                                         </div><br/>
                                         {this.state.commentsInPost[index] !== "c" &&
